@@ -12,7 +12,7 @@
     "
   />
   <RegForm v-if="!authorized && register" />
-  <MainForm v-if="authorized" />  
+  <MainForm v-if="authorized" /> 
 </template>
 
 <script>

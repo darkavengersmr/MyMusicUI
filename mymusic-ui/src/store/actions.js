@@ -63,6 +63,17 @@ export default {
             return response;               
         }).catch((error) => error)      
     },
+    controlPlayback(context, {token: token, operation: operation}) {
+        return api.readStatus({token: token, params: {operation: operation}}).then((response) => {
+            if (response.data.operation == "stop ok") {
+                context.commit("setPlayback", false);
+            }
+            if (response.data.operation == "play ok") {
+                context.commit("setPlayback", true);
+            }                                    
+            return response;               
+        }).catch((error) => error)      
+    },
     getObj(context, { url, storepoint, params }) {
         if (this.state.user.id != undefined) {
             return api.readObject({ token: this.state.auth.token, user_id: this.state.user.id, url: url, params: params })
