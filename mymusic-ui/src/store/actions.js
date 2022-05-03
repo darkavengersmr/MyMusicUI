@@ -22,9 +22,6 @@ export default {
                         VueCookies.set("username", username, -1);
                         VueCookies.set("token", response.data.access_token, -1);
                         context.commit("setToken", response.data.access_token);
-
-                        context.dispatch("updatePeriod");
-                        context.dispatch("refreshFlows");
                         
                         if (username == "demo") {
                           context.commit("setIsDemo", true);              
@@ -45,22 +42,25 @@ export default {
         }        
         if (token) {
             context.commit("setToken", token);            
-        }
+        }        
         return token
     },
-    getUserId(context, token) {        
-        return api.readUserId(token).then((user) => {
-            context.commit("setUser", user.data);
-            
+    getStatus(context, token) {        
+        return api.readStatus({token: token, params: {operation: 'status'}}).then((response) => {
+            if (response.data.operation == "status: stop") {
+                context.commit("setPlayback", false);
+            }
+            else {
+                context.commit("setPlayback", true);
+            }                        
             context.commit("setAuthorized", true);
-            context.dispatch("updatePeriod");
-            context.dispatch("refreshFlows");
-            
-            if (this.state.user.username == "demo") {
+            context.commit("setUsername", response.data.username);
+
+            if (response.data.username == "demo") {
               context.commit("setIsDemo", true);              
             }            
 
-            return user;               
+            return response;               
         }).catch((error) => error)      
     },
     getObj(context, { url, storepoint, params }) {

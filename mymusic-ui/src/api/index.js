@@ -22,6 +22,17 @@ export default {
       data: 'username=' + username + '&password=' + password,
   })
   },
+  readStatus({token, params}) {
+    return axios({
+      method: 'get',
+      url: '/playback',
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },
+      params: params 
+  })
+  },
   readObject({token, user_id, url, params}) {
     return axios({
       method: 'get',

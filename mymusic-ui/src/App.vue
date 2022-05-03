@@ -1,23 +1,33 @@
 <template>
   <div v-if="isDemo" class="demo">ДЕМО-РЕЖИМ. ИЗМЕНЕНИЯ НЕ СОХРАНЯЮТСЯ</div>
-  <img v-if="!authorized" alt="MyMusic logo" class="logo" src="./assets/logo_wide.png">
-  <h3 v-if="!authorized" class="title">Моя.Музыка</h3>
-  <LoginForm v-if="authorized" />
-  <RegForm v-if="authorized" />
-  <MainForm v-if="!authorized" />  
+  <img alt="MyMusic logo" class="logo" src="./assets/logo_wide.png" />
+  <h3 class="title">Моя.Музыка</h3>
+  <LoginForm
+    v-if="!authorized && !register"
+    @clickBtnLogin="
+      getToken({
+        username: $event.username,
+        password: $event.password,
+      })
+    "
+  />
+  <RegForm v-if="!authorized && register" />
+  <MainForm v-if="authorized" />  
 </template>
 
 <script>
 import { mapState, mapMutations, mapActions } from "vuex";
-import LoginForm from './components/LoginForm.vue'
-import MainForm from './components/MainForm.vue'
-import RegForm from './components/RegForm.vue'
+import LoginForm from "./components/LoginForm.vue";
+import MainForm from "./components/MainForm.vue";
+import RegForm from "./components/RegForm.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+
   computed: {
     ...mapState({
       authorized: "authorized",
+      register: "register",
       auth: "auth",
       user: "user",
       isMobile: "isMobile",
@@ -35,8 +45,15 @@ export default {
     ...mapActions({
       getToken: "getToken",
       getTokenFromCookie: "getTokenFromCookie",
-      getObj: "getObj",
+      getStatus: "getStatus",
     }),
+    setViewport: function () {
+      let viewportContent =
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+      document
+        .querySelector("meta[name='viewport']")
+        .setAttribute("content", viewportContent);
+    },
     isMobileOrDesktop() {
       //this.setWindowinnerWidth(window.innerWidth);
 
@@ -51,14 +68,30 @@ export default {
           this.setIsMobile(true);
         } else {
           this.setIsMobile(false);
-          if (this.authorized) {
-            this.$router.push({ name: "outflow" });
-          }
         }
       }
     },
   },
-  mounted() {    
+  created() {
+    //Detect window resize
+    window.addEventListener("resize", this.setViewport);
+    this.setViewport();
+    this.getTokenFromCookie()
+      .then((token) => {
+        if (token) {
+          return this.getStatus(token);
+        } else {
+          throw new Error("Cookie not found");
+        }
+      })     
+      .catch(() => {
+        return console.log("Cookie not found, please login");
+      });
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.setViewport);
+  },
+  mounted() {
     this.isMobileOrDesktop();
 
     window.onresize = () => {
@@ -66,9 +99,11 @@ export default {
     };
   },
   components: {
-    RegForm, LoginForm, MainForm
-  }
-}
+    RegForm,
+    LoginForm,
+    MainForm,
+  },
+};
 </script>
 
 <style>

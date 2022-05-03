@@ -8,6 +8,9 @@ export default {
     setAuthorized(state, payload) {
         state.authorized = payload;
     },
+    setRegister(state, payload) {
+        state.register = payload;
+    },
     setUsername(state, payload) {
         state.auth.username = payload;
     },
@@ -23,4 +26,10 @@ export default {
     setLoginOrRegistrationError(state, payload) {
         state.loginOrRegistrationError = payload;
     },
+    setPlayback(state, payload) {
+        state.playback = payload;
+    },
+    setNowPlay(state, payload) {
+        state.now_play = payload;
+    },   
 }

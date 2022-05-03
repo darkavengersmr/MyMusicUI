@@ -9,6 +9,7 @@ export default createStore({
       isMobile: true,
       isDemo: false,
       authorized: false,
+      register: false,
       loginOrRegistrationError: "",
       auth: {
         username: "",
@@ -16,6 +17,8 @@ export default createStore({
         token: "",
       },
       user: {},
+      playback: false,
+      now_play: "Поймай свою волну",
     };
   },
   mutations: mutations,

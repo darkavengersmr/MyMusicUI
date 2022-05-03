@@ -20,14 +20,14 @@
     <br />
     <div class="card">
       <button class="btn2 login" @click="loginTo">ВХОД</button>
-      <button class="btn2 login" @click="registerIn">РЕГИСТРАЦИЯ</button>      
+      <button class="btn2 login" @click="toRegister">РЕГИСТРАЦИЯ</button>      
     </div>
     <div class="error">{{ loginOrRegistrationError }}</div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   props: {
@@ -47,11 +47,17 @@ export default {
     })
   },
   methods: {
+    ...mapMutations({
+      setRegister: "setRegister",
+    }),
     loginTo() {
       this.$emit('clickBtnLogin', {
         username: this.form_username,
         password: this.form_password
       })
+    },
+    toRegister() {
+      this.setRegister(true);
     }
   }
 }
