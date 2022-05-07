@@ -31,5 +31,14 @@ export default {
     },
     setNowPlay(state, payload) {
         state.now_play = payload;
-    },   
+    },
+    setGenres(state, payload) {
+        state.genres = payload;
+    },
+    setArtistsByGenre(state, payload) {
+        state.artists_by_genre = payload;
+    },
+    setYears(state, payload) {
+        state.years = payload;
+    }, 
 }

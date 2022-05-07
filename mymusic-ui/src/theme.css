@@ -70,7 +70,7 @@ body {
   border-radius: 8px;  
   border: 0px solid #42b983;
   text-decoration: none;
-  text-transform: uppercase;  
+  /* text-transform: uppercase;   */
   padding: 0.5rem 0.8rem;
   white-space: nowrap;
   font-weight: 200;
@@ -84,26 +84,6 @@ body {
   opacity: 0.8;
 }
 
-.btn:active {
-  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);
-}
-
-.btn.primary {
-  background: #42b983;
-  color: #fff;
-}
-
-.btn.main {
-  background: #ffffff;
-  color: rgb(0, 0, 0);
-  font-weight: 700;
-}
-
-.btn.exit {
-  background: #4254b9;
-  color: #fff;
-}
-
 
 
 .thin {
@@ -112,26 +92,6 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.btn.danger {
-  background: #4254b9;
-  color: #fff;
-  border-color: #4254b9;
-  position: relative;
-  place-content: center;
-  place-items: center;
-  height: 24px;
-  width: fit-content;
-  border-radius: 99px;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  text-transform: uppercase;
-  margin-right: -2px;
-  padding: 0.1rem 0.3rem;
-  white-space: nowrap;
-  font-weight: 200;
-  outline: none;
-  transition: all 0.22s;
-}
 
 .page {
   width: 100%;
@@ -140,14 +100,6 @@ body {
   flex-direction: column;
 }
 
-
-.title.sort {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-}
 
 .header {
   display: flex;
@@ -161,11 +113,6 @@ body {
   flex: 0 0 auto;
 }
 
-.map {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .tocenter {
   text-align: center;
 }
@@ -173,28 +120,6 @@ body {
 .confirm_box {
   background: #000000;
   margin: 300px 0px 0px 0px;
-}
-
-.btn.confirm_yes {
-  font-size: 16px;
-  background: #004209;
-  color: rgb(255, 255, 255);
-  width: 64px;
-  height: 32px;
-  border-radius: 8px;
-  padding: 0px;
-  margin: 2px 4px 2px 4px;
-}
-
-.btn.confirm_no {
-  font-size: 16px;
-  background: #240000;
-  color: rgb(255, 255, 255);
-  width: 64px;
-  height: 32px;
-  border-radius: 8px;
-  padding: 0px;
-  margin: 2px 4px 2px 4px;
 }
 
 .modal-container {

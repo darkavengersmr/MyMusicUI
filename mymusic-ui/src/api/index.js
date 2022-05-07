@@ -33,10 +33,10 @@ export default {
       params: params 
   })
   },
-  readObject({token, user_id, url, params}) {
+  readObject({token, url, params}) {
     return axios({
       method: 'get',
-      url: '/users/' + user_id + url,
+      url: url,
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
@@ -44,37 +44,15 @@ export default {
       params: params 
   })
   },
-  createObject({token, user_id, url, obj}) {
+  createObject({token, url, params}) {
     return axios({
       method: 'post',
-      url: '/users/' + user_id + url,
-      headers: {
-          "accept": "application/json",
-          "Authorization": "Bearer " + token
-      },
-     data: obj 
-    })
-  },
-  deleteObject({token, user_id, url, params}) {
-    return axios({
-      method: 'delete',
-      url: '/users/' + user_id + url,
+      url: url,
       headers: {
           "accept": "application/json",
           "Authorization": "Bearer " + token
       },
       params: params 
-    })
-  },
-  updateObject({token, user_id, url, obj}) {
-    return axios({
-      method: 'delete',
-      url: '/users/' + user_id + url,
-      headers: {
-          "accept": "application/json",
-          "Authorization": "Bearer " + token
-      },
-      data: obj
     })
   },
 }
