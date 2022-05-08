@@ -113,4 +113,18 @@ export default {
         }
       });
   },
+  confirmNowPlay(context, { now_play }) {
+    context.commit("setNowPlay", now_play);
+    api
+      .deleteObject({
+        token: this.state.auth.token,
+        url: "/now_play",
+      })
+      .then(() => {})
+      .catch((error) => {
+        if (error.response.status === 401) {
+          context.commit("setAuthorized", false);
+        }
+      });
+  },
 };

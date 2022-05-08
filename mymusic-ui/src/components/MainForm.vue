@@ -113,11 +113,13 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations({}),
+    ...mapMutations({
+    }),
     ...mapActions({
       controlPlayback: "controlPlayback",
       getObj: "getObj",
       createObj: "createObj",
+      confirmNowPlay: "confirmNowPlay",
     }),
     play() {
       this.controlPlayback({
@@ -180,7 +182,7 @@ export default {
       this.mode = "moods";
     },
     getFavorites() {
-      this.mode = "favorites";
+      this.mode = "favorites";          
     },
     setFilter({mode, item}) {
       this.mode = null;
@@ -198,7 +200,12 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    this.$sse.create({url: '/now_play?user='+this.auth.username})
+  .on('', (msg) => this.confirmNowPlay({ now_play: msg }))
+  .connect()
+  .catch((err) => console.error('Failed make initial connection:', err));
+  },
 };
 </script>
 

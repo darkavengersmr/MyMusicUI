@@ -55,4 +55,14 @@ export default {
       params: params 
     })
   },
+  deleteObject({token, url}) {
+    return axios({
+      method: 'delete',
+      url: url,
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },      
+    })
+  },
 }

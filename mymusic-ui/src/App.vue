@@ -97,6 +97,7 @@ export default {
     window.onresize = () => {
       this.isMobileOrDesktop();
     };
+
   },
   components: {
     RegForm,

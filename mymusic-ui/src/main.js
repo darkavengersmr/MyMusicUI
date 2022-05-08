@@ -4,4 +4,6 @@ import './registerServiceWorker'
 import store from './store/store'
 import './theme.css'
 
-createApp(App).use(store).mount('#app')
+import VueSSE from 'vue-sse';
+
+createApp(App).use(store).use(VueSSE).mount('#app')
