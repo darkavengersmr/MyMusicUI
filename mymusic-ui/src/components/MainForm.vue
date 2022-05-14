@@ -35,32 +35,39 @@
     </div>
     <div>
       <button
-        v-bind:class="{ btn: true, filter: true, genres: filters.mode == 'genre' }"
+        v-bind:class="{ btn: true, filter: true, genres: filters.mode == 'genre' && !prefs_active }"
         @click="getGenres"
       >
         Жанры
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, years: filters.mode == 'year' }"
+        v-bind:class="{ btn: true, filter: true, years: filters.mode == 'year' && !prefs_active}"
         @click="getYears"
       >
         Эпохи
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, moods: filters.mode == 'mood' }"
+        v-bind:class="{ btn: true, filter: true, moods: filters.mode == 'mood' && !prefs_active}"
         @click="getMoods"
       >
         Настроения
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, favorites: filters.mode == 'favorite' }"
+        v-bind:class="{ btn: true, filter: true, favorites: filters.mode == 'favorite' && !prefs_active}"
         @click="getFavorites"
       >
         Избранное
       </button>
+      <button
+        v-bind:class="{ btn: true, filter: true, prefs: prefs_active }"
+        @click="getPrefs()"
+      >
+        &#9881;
+      </button>
+      
     </div>
 
-    <div class="map" v-if="filters.mode == 'genre'">
+    <div class="map" v-if="filters.mode == 'genre' && !prefs_active">
       <div class="list">
         <div v-for="(item, idx) in genres" :key="idx">
           <div v-if="item!==filters.genre" class="item_genres" @click="setFilter({ mode:'genre', item: item })">
@@ -73,7 +80,7 @@
       </div>
     </div>
 
-    <div class="map" v-if="filters.mode == 'year'">
+    <div class="map" v-if="filters.mode == 'year' && !prefs_active">
       <div class="list">
         <div v-for="(item, idx) in years" :key="idx">
           <div v-if="item!==filters.year" class="item_years" @click="setFilter({ mode:'year', item: item })">
@@ -86,31 +93,40 @@
       </div>
     </div>
 
-    <div class="map" v-if="filters.mode == 'mood'">
+    <div class="map" v-if="filters.mode == 'mood' && !prefs_active">
       <div class="list">
-        <div v-for="(item, idx) in moods" :key="idx" @click="setFilter({ mode:'mood', item: item })">
-          <div class="item_moods">
+        <div v-for="(item, idx) in moods" :key="idx">
+          <div v-if="item!==filters.mood" class="item_moods" @click="setFilter({ mode:'mood', item: item })">
+              {{ item }}
+          </div>
+          <div v-if="item==filters.mood" class="item_moods_active">
               {{ item }}
           </div>
         </div>
       </div>
     </div>
 
-    <div class="map" v-if="filters.mode == 'favorite'">
+    <div class="map" v-if="filters.mode == 'favorite' && !prefs_active">
       <div class="list">
         <div v-for="(item, idx) in favorites" :key="idx">
-          <div class="item_favorites" @click="setFilter({ mode:'favorite', item: item })">
+          <div v-if="item!==filters.favorite" class="item_favorites" @click="setFilter({ mode:'favorite', item: item })">
+              {{ item }}
+          </div>
+          <div v-if="item==filters.favorite" class="item_favorites_active">
               {{ item }}
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <PrefsForm v-if="prefs_active"></PrefsForm>
   <StreamReceiver ref="stream_receiver"/>
 </template>
 
 <script>
 import StreamReceiver from "./StreamReceiver.vue";
+import PrefsForm from "./PrefsForm.vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
@@ -119,6 +135,7 @@ export default {
   data() {
     return {
       interact: false,
+      prefs_active: false
     };
   },
   computed: {
@@ -197,6 +214,7 @@ export default {
       });
     },
     getGenres() {
+      this.prefs_active = false;
       this.setFilters({...this.filters, mode: "genre"});
       this.getObj({
         url: "/filter",
@@ -213,6 +231,7 @@ export default {
       });
     },
     getYears() {
+      this.prefs_active = false;
       this.setFilters({...this.filters, mode: "year"});
       this.getObj({
         url: "/filter",
@@ -221,10 +240,15 @@ export default {
       });
     },
     getMoods() {
+      this.prefs_active = false;
       this.setFilters({...this.filters, mode: "mood"});      
     },
     getFavorites() {
+      this.prefs_active = false;
       this.setFilters({...this.filters, mode: "favorite"});          
+    },
+    getPrefs() {
+      this.prefs_active = !this.prefs_active;      
     },
     setFilter({mode, item}) {
       let filter = {mode: mode};
@@ -264,7 +288,8 @@ export default {
     .catch((err) => console.error('Failed make initial connection:', err));
   },
     components: {
-    StreamReceiver
+    StreamReceiver,
+    PrefsForm
   },
 };
 </script>
@@ -304,6 +329,10 @@ export default {
 
 .btn.filter.favorites {
   background: rgb(255, 165, 0);
+}
+
+.btn.filter.prefs {
+  background: rgb(255, 0, 0);
 }
 
 .track_info {
@@ -376,8 +405,28 @@ export default {
   transition: all 2s;
 }
 
+.item_moods_active {
+  background: rgb(74, 0, 134);
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  margin: 2px 1px 2px 1px;
+  border-radius: 8px;
+  transition: all 2s;
+}
+
 .item_favorites {
   background: rgb(255, 165, 0);
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  margin: 2px 1px 2px 1px;
+  border-radius: 8px;
+  transition: all 2s;
+}
+
+.item_favorites_active {
+  background: rgb(136, 88, 0);
   color: white;
   padding: 8px;
   font-size: 16px;

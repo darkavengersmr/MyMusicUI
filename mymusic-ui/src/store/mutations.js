@@ -46,5 +46,8 @@ export default {
     },
     setLike(state, payload) {
         state.like = payload;
-    }, 
+    },
+    setPrefs(state, payload) {
+        state.like = payload;
+    },
 }

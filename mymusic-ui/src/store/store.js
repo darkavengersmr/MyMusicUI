@@ -18,6 +18,9 @@ export default createStore({
       },
       prefs: {
         radio_effect: true,
+        normalize: true,
+        external_player: false,
+        quality: "2",
       },
       user: {},
       playback: false,
@@ -50,9 +53,9 @@ export default createStore({
       ],
       favorites: [
         "Мне нравятся",
-        //"Любимые исполнители",        
-        //"Любимые жанры",
+        "Любимые исполнители",                
         "Непрослушанные",
+        "Любимые жанры",
       ],
     };
   },

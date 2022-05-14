@@ -62,18 +62,23 @@ export default {
       url(this);
       setTimeout(() => start(this), 1500);
     },
-    startSound() {      
-      this.mySample.currentTime = Math.random() * 20;      
-      this.mySample.play();            
+    startSound() {
+      if (this.prefs.radio_effect) {      
+        this.mySample.currentTime = Math.random() * 20;      
+        this.mySample.play();
+      }
     },
     stopSound() {
-      this.mySample.pause();
+      if (this.prefs.radio_effect) {
+        this.mySample.pause();
+      }
     },
   },
   mounted() {
     this.mySample = new Audio(require('@/music/radio_effect.mp3'));
     this.mySample.loop = true;
     this.mySample.load();
+    
     const { audioPlayer } = this.$refs;
     this.myPlayer = audioPlayer;
     if (this.prefs.radio_effect) {
