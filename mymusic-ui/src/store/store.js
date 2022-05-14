@@ -16,9 +16,20 @@ export default createStore({
         password: "",
         token: "",
       },
+      prefs: {
+        radio_effect: true,
+      },
       user: {},
       playback: false,
+      filters: {
+        mode: null,
+        genre: null,
+        artist: null,
+        year: null,
+        mood: null
+      },
       now_play: "Поймай свою волну",
+      like: 'neutral',
       genres: [],
       artists_by_genre: [],
       years: [],
@@ -36,6 +47,12 @@ export default createStore({
         "Бодрое",
         "Мистическое",
         "Романтическое",        
+      ],
+      favorites: [
+        "Мне нравятся",
+        //"Любимые исполнители",        
+        //"Любимые жанры",
+        "Непрослушанные",
       ],
     };
   },

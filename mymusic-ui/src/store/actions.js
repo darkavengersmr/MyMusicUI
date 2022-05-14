@@ -62,6 +62,15 @@ export default {
         }
         context.commit("setAuthorized", true);
         context.commit("setUsername", response.data.username);
+        context.commit("setFilters", {mode: response.data.mode,
+          genre: response.data.genre,
+          artist: response.data.artist,
+          year: response.data.year,
+          mood: response.data.mood,
+          favorite: response.data.favorite,
+        });
+        context.commit("setNowPlay", response.data.now_play);
+        
 
         if (response.data.username == "demo") {
           context.commit("setIsDemo", true);
@@ -114,7 +123,15 @@ export default {
       });
   },
   confirmNowPlay(context, { now_play }) {
-    context.commit("setNowPlay", now_play);
+    if (now_play.length > 10) {
+      const pos = now_play.indexOf('|')   
+      const like = now_play.slice(pos+1);
+      context.commit("setNowPlay", now_play.slice(0, pos-1));
+      context.commit("setLike", like);
+    }
+    else {
+        context.commit("setNowPlay", "Поймай свою волну");
+    }
     api
       .deleteObject({
         token: this.state.auth.token,

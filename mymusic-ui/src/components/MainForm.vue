@@ -1,78 +1,94 @@
 <template>
-  <div>
-    <p class="headphones">&#127911;</p>
+  <div>    
+    <div v-if="playback">
+      <img src="../assets/tape.gif" width="240" />    
+    </div>
+    <div v-if="!playback">
+      <img src="../assets/tape.jpg" width="240" />
+    </div>
     <div>
       <p class="track_info">{{ now_play }}</p>
-      <button class="btn" @click="dislike">
-        <img src="../assets/dislike.png" width="36" />
+      <button class="btn" @click="sendLike('dislike')">
+        <img v-if="like!='dislike'" src="../assets/dislike.png" width="36" />
+        <img v-if="like=='dislike'" src="../assets/dislike_active.png" width="36" />
       </button>
-      <button class="btn" @click="next">
+      <button class="btn" @click="prev">
         <img src="../assets/prev.png" width="36" />
       </button>
       <button v-if="!playback" class="btn" @click="play">
         <img src="../assets/play.png" width="36" />
       </button>
-      <button v-if="playback" class="btn" @click="stop">
+      <button v-if="playback && interact" class="btn" @click="stop">
         <img src="../assets/stop.png" width="36" />
+      </button>
+      <button v-if="playback && !interact" class="btn" @click="play">
+        <img src="../assets/unmute.png" width="36" />
       </button>
       <button class="btn" @click="next">
         <img src="../assets/next.png" width="36" />
       </button>
-      <button class="btn" @click="like">
-        <img src="../assets/like.png" width="36" />
+      <button class="btn" @click="sendLike('like')">
+        <img v-if="like!='like'" src="../assets/like.png" width="36" />
+        <img v-if="like=='like'" src="../assets/like_active.png" width="36" />
       </button>
       <!-- &#128078; &#x23EA; &#x25B6; &#9209; &#x23E9; &#128077; -->
     </div>
     <div>
       <button
-        v-bind:class="{ btn: true, filter: true, genres: mode == 'genres' }"
+        v-bind:class="{ btn: true, filter: true, genres: filters.mode == 'genre' }"
         @click="getGenres"
       >
         Жанры
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, years: mode == 'years' }"
+        v-bind:class="{ btn: true, filter: true, years: filters.mode == 'year' }"
         @click="getYears"
       >
         Эпохи
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, moods: mode == 'moods' }"
+        v-bind:class="{ btn: true, filter: true, moods: filters.mode == 'mood' }"
         @click="getMoods"
       >
         Настроения
       </button>
       <button
-        v-bind:class="{ btn: true, filter: true, favorites: mode == 'favorites' }"
+        v-bind:class="{ btn: true, filter: true, favorites: filters.mode == 'favorite' }"
         @click="getFavorites"
       >
         Избранное
       </button>
     </div>
 
-    <div class="map" v-if="mode == 'genres'">
+    <div class="map" v-if="filters.mode == 'genre'">
       <div class="list">
         <div v-for="(item, idx) in genres" :key="idx">
-          <div class="item_genres" @click="setFilter({ mode:'genre', item: item })">
+          <div v-if="item!==filters.genre" class="item_genres" @click="setFilter({ mode:'genre', item: item })">
+              {{item}}
+          </div>
+          <div v-if="item==filters.genre" class="item_genres_active">
               {{item}}
           </div>
         </div>
       </div>
     </div>
 
-    <div class="map" v-if="mode == 'years'">
+    <div class="map" v-if="filters.mode == 'year'">
       <div class="list">
         <div v-for="(item, idx) in years" :key="idx">
-          <div class="item_years" @click="setFilter({ mode:'year', item: item })">
+          <div v-if="item!==filters.year" class="item_years" @click="setFilter({ mode:'year', item: item })">
+              {{item}}-е
+          </div>
+          <div v-if="item==filters.year" class="item_years_active">
               {{item}}-е
           </div>
         </div>
       </div>
     </div>
 
-    <div class="map" v-if="mode == 'moods'">
+    <div class="map" v-if="filters.mode == 'mood'">
       <div class="list">
-        <div v-for="(item, idx) in moods" :key="idx">
+        <div v-for="(item, idx) in moods" :key="idx" @click="setFilter({ mode:'mood', item: item })">
           <div class="item_moods">
               {{ item }}
           </div>
@@ -80,16 +96,21 @@
       </div>
     </div>
 
+    <div class="map" v-if="filters.mode == 'favorite'">
+      <div class="list">
+        <div v-for="(item, idx) in favorites" :key="idx">
+          <div class="item_favorites" @click="setFilter({ mode:'favorite', item: item })">
+              {{ item }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <audio
-    :src="myStream"
-    ref="audioPlayer"
-    type="audio/ogg"
-    preload="auto"
-  ></audio>
+  <StreamReceiver ref="stream_receiver"/>
 </template>
 
 <script>
+import StreamReceiver from "./StreamReceiver.vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
@@ -97,23 +118,29 @@ export default {
   props: {},
   data() {
     return {
-      myStream: "",
-      mode: null,
+      interact: false,
     };
   },
   computed: {
     ...mapState({
       auth: "auth",
+      prefs: "prefs",
       playback: "playback",
+      filters: "filters",
       now_play: "now_play",      
       genres: "genres",
       artists_by_genre: "artists_by_genre",
       years: "years",
       moods: "moods",
+      favorites: "favorites",
+      like: "like",
     }),
   },
   methods: {
     ...mapMutations({
+      setNowPlay: "setNowPlay",
+      setLike: "setLike",
+      setFilters: "setFilters",
     }),
     ...mapActions({
       controlPlayback: "controlPlayback",
@@ -122,40 +149,55 @@ export default {
       confirmNowPlay: "confirmNowPlay",
     }),
     play() {
+      this.interact = true;
       this.controlPlayback({
         token: this.auth.token,
         operation: "play",
       });
-      function my2(context) {
-        context.myStream = "/stream_" + context.auth.username + ".ogg";
-      }
-      function my(context) {
-        context.$refs.audioPlayer.load();
-        context.$refs.audioPlayer.play();
-      }
-      setTimeout(() => my2(this), 800);
-      setTimeout(() => my(this), 1000);
+      this.$refs.stream_receiver.play();
     },
     stop() {
-      const { audioPlayer } = this.$refs;
-      audioPlayer.pause();
-      audioPlayer.currentTime = 0;
-      this.myStream = "";
+      this.setNowPlay("Поймай свою волну");            
+      this.$refs.stream_receiver.stop();
       this.controlPlayback({
         token: this.auth.token,
         operation: "stop",
       });
+      //this.$refs.stream_receiver.stopSound(); 
     },
     next() {
-      if (this.playback) {
-        this.controlPlayback({
-          token: this.auth.token,
-          operation: "next",
-        });
+      this.$refs.stream_receiver.stop();
+      if (this.prefs.radio_effect) {
+      this.$refs.stream_receiver.startSound();
       }
+            
+      this.controlPlayback({
+        token: this.auth.token,
+        operation: "stop",
+      });
+
+      function play(context) {
+        context.controlPlayback({
+        token: context.auth.token,
+        operation: "play",
+      });
+      }
+      
+      function next(context) {
+        context.$refs.stream_receiver.next();
+      }      
+
+      setTimeout(() => play(this), 500);
+      setTimeout(() => next(this), 1300);
+    },
+    prev() {    
+      this.controlPlayback({
+        token: this.auth.token,
+        operation: "prev",
+      });
     },
     getGenres() {
-      this.mode = "genres";
+      this.setFilters({...this.filters, mode: "genre"});
       this.getObj({
         url: "/filter",
         storepoint: "setGenres",
@@ -163,7 +205,7 @@ export default {
       });
     },
     getArtistsByGenre(genre) {
-      this.mode = "artists_by_genre";
+      this.setFilters({...this.filters, mode: "artists_by_genre"});
       this.getObj({
         url: "/filter",
         storepoint: "setArtistsByGenre",
@@ -171,7 +213,7 @@ export default {
       });
     },
     getYears() {
-      this.mode = "years";
+      this.setFilters({...this.filters, mode: "year"});
       this.getObj({
         url: "/filter",
         storepoint: "setYears",
@@ -179,13 +221,15 @@ export default {
       });
     },
     getMoods() {
-      this.mode = "moods";
+      this.setFilters({...this.filters, mode: "mood"});      
     },
     getFavorites() {
-      this.mode = "favorites";          
+      this.setFilters({...this.filters, mode: "favorite"});          
     },
     setFilter({mode, item}) {
-      this.mode = null;
+      let filter = {mode: mode};
+      filter[mode] = item;
+      this.setFilters({...filter});
       let params = { mode: mode };
       params[mode] = item;
       this.createObj({
@@ -199,12 +243,28 @@ export default {
         this.play();
       }
     },
+    sendLike(like) {
+      if (this.like == like) {
+        this.setLike("neutral")
+      }
+      else {
+        this.setLike(like)
+      }
+      let params = { feedback: like };      
+      this.createObj({
+        url: "/feedback",        
+        params: params,
+      });
+    },
   },
   mounted() {
     this.$sse.create({url: '/now_play?user='+this.auth.username})
-  .on('', (msg) => this.confirmNowPlay({ now_play: msg }))
-  .connect()
-  .catch((err) => console.error('Failed make initial connection:', err));
+    .on('', (msg) => this.confirmNowPlay({ now_play: msg }))
+    .connect()
+    .catch((err) => console.error('Failed make initial connection:', err));
+  },
+    components: {
+    StreamReceiver
   },
 };
 </script>
@@ -276,6 +336,16 @@ export default {
   transition: all 2s;
 }
 
+.item_genres_active {
+  background: rgb(0, 64, 0);
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  margin: 2px 1px 2px 1px;
+  border-radius: 8px;
+  transition: all 2s;
+}
+
 .item_years {
   background: rgb(0, 0, 255);
   color: white;
@@ -286,8 +356,28 @@ export default {
   transition: all 2s;
 }
 
+.item_years_active {
+  background: rgb(0, 0, 128);
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  margin: 2px 1px 2px 1px;
+  border-radius: 8px;
+  transition: all 2s;
+}
+
 .item_moods {
   background: rgb(139, 0, 255);
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  margin: 2px 1px 2px 1px;
+  border-radius: 8px;
+  transition: all 2s;
+}
+
+.item_favorites {
+  background: rgb(255, 165, 0);
   color: white;
   padding: 8px;
   font-size: 16px;

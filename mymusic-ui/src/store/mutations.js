@@ -29,6 +29,9 @@ export default {
     setPlayback(state, payload) {
         state.playback = payload;
     },
+    setFilters(state, payload) {
+        state.filters = payload;
+    },
     setNowPlay(state, payload) {
         state.now_play = payload;
     },
@@ -40,5 +43,8 @@ export default {
     },
     setYears(state, payload) {
         state.years = payload;
+    },
+    setLike(state, payload) {
+        state.like = payload;
     }, 
 }
