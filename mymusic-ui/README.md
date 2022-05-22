@@ -1,24 +1,20 @@
-# mymusic-ui
+# Моя.Музыка
 
-## Project setup
-```
-npm install
-```
+Frontend стримингового сервиса "Моя.Музыка".
+Используется Vue3/Vuex.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Backend здесь https://github.com/darkavengersmr/MyMusic
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Реализованы:
+- регистрация и авторизация, демо-режим
+- управление воспроизведением
+- лайк/дислайк
+- выбор жанра/эпохи/настроения
+- избранное (любимые исполнители/жанры)
+- отключаемый в настройках звук настройки на радиостанцию
+- управление нормализацией громкости
+- возможность настройки качества трансляции
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![alt text](screenshots/ui1.jpg "MyMusicUI1")
+![alt text](screenshots/ui2.jpg "MyMusicUI2")
+![alt text](screenshots/ui3.jpg "MyMusicUI3")

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   props: {      
   },
@@ -38,18 +38,24 @@ export default {
     ...mapMutations({
         setPrefs: "setPrefs",
     }),
+    ...mapActions({
+        setOptions: "setOptions",
+    }),
     setRadioEffect() {      
-      this.setPrefs({...this.prefs, radio_effect: !this.prefs.radio_effect});      
+      this.setPrefs({...this.prefs, radio_effect: !this.prefs.radio_effect});
+      this.setOptions(); 
     },
     setNormalize() {      
       this.setPrefs({...this.prefs, normalize: !this.prefs.normalize});
-      console.log(this.prefs)      
+      this.setOptions();
     },
     setExternalPlayer() {      
-      this.setPrefs({...this.prefs, external_player: !this.prefs.external_player});      
+      this.setPrefs({...this.prefs, external_player: !this.prefs.external_player});
+      this.setOptions();
     },
     setQuality() {
       this.setPrefs({...this.prefs, quality: this.prefs.quality});      
+      this.setOptions();
     },
   },
 };

@@ -17,6 +17,14 @@
         @keypress.enter="regUser"
       />
       <div />
+      Email
+      <input
+        class="login input"
+        type="text"
+        v-model="form_email"
+        @keypress.enter="regUser"
+      />
+      <div />  
       Приглашение
       <input
         class="login input"

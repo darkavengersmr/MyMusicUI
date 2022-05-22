@@ -1,4 +1,4 @@
-<template>
+<template>  
   <div>    
     <div v-if="playback">
       <img src="../assets/tape.gif" width="240" />    

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDemo" class="demo">ДЕМО-РЕЖИМ. ИЗМЕНЕНИЯ НЕ СОХРАНЯЮТСЯ</div>
+  <div v-if="isDemo" class="demo">ДЕМО-РЕЖИМ. ОБЩИЙ ПРОФИЛЬ</div>
   <img alt="MyMusic logo" class="logo" src="./assets/logo_wide.png" />
   <h3 class="title">Моя.Музыка</h3>
   <LoginForm
@@ -11,7 +11,21 @@
       })
     "
   />
-  <RegForm v-if="!authorized && register" />
+  <RegForm v-if="!authorized && register" 
+    @clickBtnReg="
+      registerUser({
+        username: $event.username,
+        password: $event.password,
+        email: $event.email,
+        invite: $event.invite,
+      })
+    "
+    @clickBtnDemo="
+      getToken({
+        username: $event.username,
+        password: $event.password,
+      })
+    "/>
   <MainForm v-if="authorized" /> 
 </template>
 
@@ -46,6 +60,8 @@ export default {
       getToken: "getToken",
       getTokenFromCookie: "getTokenFromCookie",
       getStatus: "getStatus",
+      getOptions: "getOptions",
+      registerUser: "registerUser",
     }),
     setViewport: function () {
       let viewportContent =
@@ -83,7 +99,8 @@ export default {
         } else {
           throw new Error("Cookie not found");
         }
-      })     
+      })
+      .then(() => this.getOptions())
       .catch(() => {
         return console.log("Cookie not found, please login");
       });

@@ -4,8 +4,7 @@ import api from "../api";
 
 export default {
   registerUser(context, obj) {
-    api.registerNewUser(obj).then((response) => {
-      context.commit("setUser", response.data);
+    api.registerNewUser(obj).then(() => {      
       context.dispatch("getToken", {
         username: obj.username,
         password: obj.password,
@@ -97,7 +96,7 @@ export default {
   getObj(context, { url, storepoint, params }) {
     return api
       .readObject({ token: this.state.auth.token, url: url, params: params })
-      .then((response) => {
+      .then((response) => {        
         context.commit(storepoint, response.data.result);
         return response;
       })
@@ -141,6 +140,30 @@ export default {
       .catch((error) => {
         if (error.response.status === 401) {
           context.commit("setAuthorized", false);
+        }
+      });
+  },
+  getOptions(context) {
+    return api
+      .readObject({ token: this.state.auth.token, url: '/options' })
+      .then((response) => {        
+        context.commit('setPrefs', response.data);
+        return response;
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          context.commit("setAuthorized", false);
+          return error;
+        }
+      });
+  },
+  setOptions(context) {
+    return api
+      .updateOptions({ token: this.state.auth.token, url: '/options', obj: this.state.prefs })      
+      .catch((error) => {
+        if (error.response.status === 401) {
+          context.commit("setAuthorized", false);
+          return error;
         }
       });
   },

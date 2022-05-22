@@ -48,6 +48,6 @@ export default {
         state.like = payload;
     },
     setPrefs(state, payload) {
-        state.like = payload;
+        state.prefs = payload;
     },
 }

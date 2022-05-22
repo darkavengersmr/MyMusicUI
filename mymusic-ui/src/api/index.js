@@ -65,4 +65,15 @@ export default {
       },      
     })
   },
+  updateOptions({token, url, obj}) {
+    return axios({
+      method: 'put',
+      url: url,
+      headers: {
+          "accept": "application/json",
+          "Authorization": "Bearer " + token
+      },
+      data: obj 
+    })
+  },
 }
