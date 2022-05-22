@@ -17,4 +17,3 @@ Backend здесь https://github.com/darkavengersmr/MyMusic
 
 ![alt text](screenshots/ui1.jpg "MyMusicUI1")
 ![alt text](screenshots/ui2.jpg "MyMusicUI2")
-![alt text](screenshots/ui3.jpg "MyMusicUI3")
