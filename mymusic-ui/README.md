@@ -15,5 +15,7 @@ Backend здесь https://github.com/darkavengersmr/MyMusic
 - управление нормализацией громкости
 - возможность настройки качества трансл€ции
 
+![alt text](screenshots/ui0.gif "MyMusicUI0")
+
 ![alt text](screenshots/ui1.jpg "MyMusicUI1")
 ![alt text](screenshots/ui2.jpg "MyMusicUI2")
